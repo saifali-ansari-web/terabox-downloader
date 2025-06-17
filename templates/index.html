@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terabox Video Downloader</title>
+</head>
+<body>
+  <h1>Terabox Video Downloader</h1>
+  <form id="downloadForm">
+    <input type="url" id="videoLink" placeholder="Enter Terabox video URL" required />
+    <button type="submit">Generate Download Link</button>
+  </form>
+  <div id="resultSection" style="display:none;">
+    <a id="downloadLink" href="#" target="_blank">Download</a>
+    <a id="watchLink" href="#" target="_blank">Watch</a>
+  </div>
+  <script>
+    document.getElementById("downloadForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const link = document.getElementById("videoLink").value;
+      fetch("/api/download", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: link })
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("downloadLink").href = data.download;
+        document.getElementById("watchLink").href = data.stream;
+        document.getElementById("resultSection").style.display = "block";
+      })
+      .catch(() => alert("Error generating link"));
+    });
+  </script>
+</body>
+</html>
